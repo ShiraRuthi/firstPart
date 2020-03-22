@@ -5,6 +5,7 @@ package geometries;
 
 import primitives.Point3D;
 import primitives.Vector;
+import primitives.Ray;
 
 /**
  * @author Ruthi
@@ -12,7 +13,7 @@ import primitives.Vector;
  */
 public class Tube extends RadialGeometry 
 {
-	
+	Ray _ray;
 
 	public Tube(RadialGeometry _r) {
 		super(_r);

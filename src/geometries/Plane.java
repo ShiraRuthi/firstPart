@@ -45,5 +45,13 @@ public class Plane
 		return _p;
 	}
 	
+	public Vector getNormal(Point3D _p)
+	{
+		return null;
+	}
+	public Vector getNormal() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 }
