@@ -87,27 +87,30 @@ public class Vector {
 			return false;
 		return true;
 	}
-	public double 	lengthSquared(Vector _v)
+	public double 	lengthSquared()
 	{
 		return ((_head.get_x().get())*(_head.get_x().get())+(_head.get_y().get())*(_head.get_y().get())+(_head.get_z().get())*(_head.get_z().get()));
 	}
-	public double 	length(Vector _v)
+	public double 	length()
 	{
-		return Math.sqrt(lengthSquared(_v));
+		return Math.sqrt(lengthSquared());
 	}
 	public double dotProduct(Vector _other)
 	{
 	    return this.get_head().get_x().get()*_other.get_head().get_x().get()+this.get_head().get_y().get()*_other.get_head().get_y().get()+this.get_head().get_z().get()*_other.get_head().get_z().get();
 	}
-	public Vector crossProduct(Vector _v) 
+	public Vector crossProduct(Vector v) 
 	{
-		return new Vector(this.get_head().get_y().get()*_v.get_head().get_z().get()-this.get_head().get_z().get()*_v.get_head().get_y().get(),
-				this.get_head().get_x().get()*_v.get_head().get_z().get()-this.get_head().get_z().get()*_v.get_head().get_x().get(),
-				this.get_head().get_x().get()*_v.get_head().get_y().get()-this.get_head().get_y().get()*_v.get_head().get_x().get());
+		
+		return new Vector(this._head.get_y().get()*v._head.get_z().get()-this._head.get_z().get()*v._head.get_y().get(),
+				 this._head.get_z().get()*v._head.get_x().get()-this._head.get_x().get()*v._head.get_z().get(),
+				 this._head.get_x().get()*v._head.get_y().get()-this._head.get_y().get()*v._head.get_x().get());
+
 	}
 	public Vector normalize()
 	{
-		return this.scale(1/length(this));
+		this._head = this.scale(1/length())._head;
+		return this;
 		
 	}
 	public Vector normalized()

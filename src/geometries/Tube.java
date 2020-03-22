@@ -13,7 +13,7 @@ import primitives.Ray;
  */
 public class Tube extends RadialGeometry 
 {
-	Ray _ray;
+	Ray _axisRay;
 
 	public Tube(RadialGeometry _r) {
 		super(_r);
