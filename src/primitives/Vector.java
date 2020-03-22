@@ -100,8 +100,7 @@ public class Vector {
 	    return this.get_head().get_x().get()*_other.get_head().get_x().get()+this.get_head().get_y().get()*_other.get_head().get_y().get()+this.get_head().get_z().get()*_other.get_head().get_z().get();
 	}
 	public Vector crossProduct(Vector v) 
-	{
-		
+	{	
 		return new Vector(this._head.get_y().get()*v._head.get_z().get()-this._head.get_z().get()*v._head.get_y().get(),
 				 this._head.get_z().get()*v._head.get_x().get()-this._head.get_x().get()*v._head.get_z().get(),
 				 this._head.get_x().get()*v._head.get_y().get()-this._head.get_y().get()*v._head.get_x().get());
