@@ -11,7 +11,7 @@ import primitives.Vector;
  * 
  * @author Dan
  */
-public abstract class Polygon implements Geometry {
+public  class Polygon implements Geometry {
     /**
      * List of polygon's vertices
      */

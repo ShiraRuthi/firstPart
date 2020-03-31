@@ -56,11 +56,11 @@ public class Vector {
 	
 	public Vector subtract(Vector _v)
 	{
-		return new Vector(_v._head.subtract(_head));
+		return new Vector(_head.subtract(_v._head));
 	}
 	public Vector add(Vector _v)
 	{
-		return new Vector(_v._head.add(_head));
+		return new Vector(_head.add(_v));
 	}
 	public Vector scale(double l)
 	{

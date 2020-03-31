@@ -15,14 +15,17 @@ public class Tube extends RadialGeometry
 {
 	Ray _axisRay;
 
-	public Tube(RadialGeometry _r) {
+	public Tube(double _r,Ray _ray) {
 		super(_r);
 		// TODO Auto-generated constructor stub
+		_axisRay=_ray;
 	}
 	
-	public Vector getNormal(Point3D _p)
-	{
-		return null;
+	public Vector getNormal(Point3D _p) {
+		
+		double t=(_axisRay.get_v().dotProduct(_p.subtract(_axisRay.get_p())));
+		Point3D _O=_axisRay.get_p().add(_axisRay.get_v().scale(t));
+		return new Vector(_p.subtract(_O));
 	}
 
 }

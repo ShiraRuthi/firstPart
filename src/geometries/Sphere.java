@@ -13,8 +13,9 @@ public class Sphere extends RadialGeometry {
 	private Point3D _center;
 	
 	
-	public Sphere(RadialGeometry _r) {
+	public Sphere(Point3D _center1,double _r) {
 		super(_r);
+		_center= _center1;
 		// TODO Auto-generated constructor stub
 	}
 
@@ -22,6 +23,6 @@ public class Sphere extends RadialGeometry {
 	
 	public Vector getNormal(Point3D _p)
 	{
-		return null;
+		return new Vector(_p.subtract(_center));
 	}
 }

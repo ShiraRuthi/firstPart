@@ -25,7 +25,9 @@ public class Plane
 	public Plane(Point3D _p1,Point3D _p2,Point3D _p3)
 	{
 		super();
-		this._v =null;
+		Vector _v1 = _p3.subtract(_p2);
+		Vector _v2 = _p2.subtract(_p1);
+		this._v =_v1.crossProduct(_v2);
 		this._p = _p1;
 	}
 	@Override
@@ -47,11 +49,11 @@ public class Plane
 	
 	public Vector getNormal(Point3D _p)
 	{
-		return null;
+		return _v;
 	}
 	public Vector getNormal() {
 		// TODO Auto-generated method stub
-		return null;
+		return _v;
 	}
 	
 }

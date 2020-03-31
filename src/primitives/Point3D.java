@@ -49,12 +49,12 @@ public class Point3D {
 	
 	public Vector subtract(Point3D _p2)
 	{
-		return new Vector(_p2._x._coord-_x._coord,_p2._y._coord-_y._coord,_p2._z._coord-_z._coord);
+		return new Vector(_x._coord-_p2._x._coord,_y._coord-_p2._y._coord,_z._coord-_p2._z._coord);
 	}
 	
-	public Point3D add(Point3D _p2)
+	public Point3D add(Vector _v)
 	{
-		return new Point3D(_p2._x._coord+_x._coord,_p2._y._coord+_y._coord,_p2._z._coord+_z._coord);
+		return new Point3D(_v.get_head()._x._coord+_x._coord,_v.get_head()._y._coord+_y._coord,_v.get_head()._z._coord+_z._coord);
 	}
 	
 	public double distance(Point3D _p)
