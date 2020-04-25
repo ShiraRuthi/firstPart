@@ -10,7 +10,7 @@ package geometries;
 public abstract class RadialGeometry implements Geometry 
 {
  
-	private double _radius;
+	protected double _radius;
 	
 	/**
 	 * @param _radius

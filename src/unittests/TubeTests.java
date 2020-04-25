@@ -23,9 +23,8 @@ public class TubeTests {
 	@Test
 	public void testGetNormal() {
 		
-		Tube _t = new Tube(9,new Ray(new Point3D(1,1,1),new Vector(2,3,2)));
-		assertEquals("Bad normal to tube",_t.getNormal(new Point3D(2,2,2)),new Vector(0.17647058823529393,-0.23529411764705888,0.17647058823529393));
-		
+		Tube tube = new Tube(1.0, new Ray(new Point3D(0, 0, 1), new Vector(0, 1, 0)));
+	       assertEquals("Bad normal to tube", new Vector(0, 0, 1), tube.getNormal(new Point3D(0, 0.5, 2)));
 	}
 
 }

@@ -2,7 +2,7 @@
  * 
  */
 package primitives;
-
+import static primitives.Util.isZero;;
 /**
  * @author Ruthi
  *
@@ -15,13 +15,13 @@ public class Ray {
 	 */
 	public Point3D get_p() 
 	{
-		return _p;
+		return new Point3D(_p);
 	}
 	/**
 	 * @return the _v
 	 */
 	public Vector get_v() {
-		return _v;
+		return new Vector(_v);
 	}
 	
 	@Override
@@ -58,6 +58,9 @@ public class Ray {
 		this._p = _p;
 		this._v = _v.normalized();
 	}
+	public Point3D getTargetPoint(double length) {
+        return isZero(length ) ? _p : _p.add(_v.scale(length));
+ }
 
 	
 
