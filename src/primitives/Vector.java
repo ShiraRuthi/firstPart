@@ -117,5 +117,5 @@ public class Vector {
 		return new Vector(this.normalize());
 		
 	}
-	
+	 
 }

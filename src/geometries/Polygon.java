@@ -1,5 +1,6 @@
 package geometries;
 
+import java.util.ArrayList;
 import java.util.List;
 import primitives.*;
 import static primitives.Util.*;
@@ -11,7 +12,7 @@ import primitives.Vector;
  * 
  * @author Dan
  */
-public  class Polygon implements Geometry {
+public  class Polygon extends Geometry {
     /**
      * List of polygon's vertices
      */
@@ -21,11 +22,38 @@ public  class Polygon implements Geometry {
      */
     protected Plane _plane;
 
+/**
+ * 
+ * @param vertices
+ */
+    public Polygon(Point3D... vertices) {
+    helpCtor(vertices);
+    }
+    /**
+     * 
+     * @param _color
+     * @param vertices
+     */
+    public Polygon(Color _color ,Point3D... vertices) {
+        super(_color);
+        helpCtor(vertices);
+        }
+    /**
+     * 
+     * @param _material
+     * @param _color
+     * @param vertices
+     */
+    public Polygon(Material _material,Color _color ,Point3D... vertices) {
+        super(_color,_material);
+        helpCtor(vertices);
+        }
     /**
      * Polygon constructor based on vertices list. The list must be ordered by edge
      * path. The polygon must be convex.
      * 
      * @param vertices list of vertices according to their order by edge path
+     * @param _color - get the object color
      * @throws IllegalArgumentException in any case of illegal combination of
      *                                  vertices:
      *                                  <ul>
@@ -42,74 +70,78 @@ public  class Polygon implements Geometry {
      *                                  <li>The polygon is concave (not convex></li>
      *                                  </ul>
      */
-    public Polygon(Point3D... vertices) {
-        if (vertices.length < 3)
-            throw new IllegalArgumentException("A polygon can't have less than 3 vertices");
-        _vertices = List.of(vertices);
-        // Generate the plane according to the first three vertices and associate the
-        // polygon with this plane.
-        // The plane holds the invariant normal (orthogonal unit) vector to the polygon
-        _plane = new Plane(vertices[0], vertices[1], vertices[2]);
-        if (vertices.length == 3) return; // no need for more tests for a Triangle
+   
+    public void helpCtor(Point3D... vertices)
+    {
+    if (vertices.length < 3)
+        throw new IllegalArgumentException("A polygon can't have less than 3 vertices");
+    _vertices = List.of(vertices);
+    // Generate the plane according to the first three vertices and associate the
+    // polygon with this plane.
+    // The plane holds the invariant normal (orthogonal unit) vector to the polygon
+    _plane = new Plane(vertices[0], vertices[1], vertices[2]);
+    if (vertices.length == 3) return; // no need for more tests for a Triangle
 
-        Vector n = _plane.getNormal();
+    Vector n = _plane.getNormal();
 
-        // Subtracting any subsequent points will throw an IllegalArgumentException
-        // because of Zero Vector if they are in the same point
-        Vector edge1 = vertices[vertices.length - 1].subtract(vertices[vertices.length - 2]);
-        Vector edge2 = vertices[0].subtract(vertices[vertices.length - 1]);
+    // Subtracting any subsequent points will throw an IllegalArgumentException
+    // because of Zero Vector if they are in the same point
+    Vector edge1 = vertices[vertices.length - 1].subtract(vertices[vertices.length - 2]);
+    Vector edge2 = vertices[0].subtract(vertices[vertices.length - 1]);
 
-        // Cross Product of any subsequent edges will throw an IllegalArgumentException
-        // because of Zero Vector if they connect three vertices that lay in the same
-        // line.
-        // Generate the direction of the polygon according to the angle between last and
-        // first edge being less than 180 deg. It is hold by the sign of its dot product
-        // with
-        // the normal. If all the rest consequent edges will generate the same sign -
-        // the
-        // polygon is convex ("kamur" in Hebrew).
-        boolean positive = edge1.crossProduct(edge2).dotProduct(n) > 0;
-        for (int i = 1; i < vertices.length; ++i) {
-            // Test that the point is in the same plane as calculated originally
-            if (!isZero(vertices[i].subtract(vertices[0]).dotProduct(n)))
-                throw new IllegalArgumentException("All vertices of a polygon must lay in the same plane");
-            // Test the consequent edges have
-            edge1 = edge2;
-            edge2 = vertices[i].subtract(vertices[i - 1]);
-            if (positive != (edge1.crossProduct(edge2).dotProduct(n) > 0))
-                throw new IllegalArgumentException("All vertices must be ordered and the polygon must be convex");
-        }
+    // Cross Product of any subsequent edges will throw an IllegalArgumentException
+    // because of Zero Vector if they connect three vertices that lay in the same
+    // line.
+    // Generate the direction of the polygon according to the angle between last and
+    // first edge being less than 180 deg. It is hold by the sign of its dot product
+    // with
+    // the normal. If all the rest consequent edges will generate the same sign -
+    // the
+    // polygon is convex ("kamur" in Hebrew).
+    boolean positive = edge1.crossProduct(edge2).dotProduct(n) > 0;
+    for (int i = 1; i < vertices.length; ++i) {
+        // Test that the point is in the same plane as calculated originally
+        if (!isZero(vertices[i].subtract(vertices[0]).dotProduct(n)))
+            throw new IllegalArgumentException("All vertices of a polygon must lay in the same plane");
+        // Test the consequent edges have
+        edge1 = edge2;
+        edge2 = vertices[i].subtract(vertices[i - 1]);
+        if (positive != (edge1.crossProduct(edge2).dotProduct(n) > 0))
+            throw new IllegalArgumentException("All vertices must be ordered and the polygon must be convex");
     }
+    }
+   
 
     @Override
     public Vector getNormal(Point3D point) {
         return _plane.getNormal();
     }
 	@Override
-	public List<Point3D> findIntersections(Ray ray) {
+	public List<GeoPoint> findIntersections(Ray ray) {
 
-        List<Point3D> intersections = _plane.findIntersections(ray);
-        if (intersections == null) return null;
+		 List<GeoPoint> intersections = _plane.findIntersections(ray);
 
-        Point3D p0 = ray.get_p();
-        Vector v = ray.get_v();
+	        if (intersections == null) return null;
 
-        Vector v1  = _vertices.get(1).subtract(p0);
-        Vector v2 = _vertices.get(0).subtract(p0);
-        double sign = v.dotProduct(v1.crossProduct(v2));
-        if (isZero(sign))
-            return null;
+	        Point3D p0 = ray.get_p();
+	        Vector v = ray.get_v();
 
-        boolean positive = sign > 0;
+	        Vector v1 = _vertices.get(1).subtract(p0);
+	        Vector v2 = _vertices.get(0).subtract(p0);
+	        double sign = v.dotProduct(v1.crossProduct(v2));
+	        if (isZero(sign))
+	            return null;
 
-        for (int i = _vertices.size() - 1; i > 0; --i) {
-            v1 = v2;
-            v2 = _vertices.get(i).subtract(p0);
-            sign = alignZero(v.dotProduct(v1.crossProduct(v2)));
-            if (isZero(sign)) return null;
-            if (positive != (sign >0)) return null;
-        }
+	        boolean positive = sign > 0;
 
-        return intersections;
+	        for (int i = _vertices.size() - 1; i > 0; --i) {
+	            v1 = v2;
+	            v2 = _vertices.get(i).subtract(p0);
+	            sign = alignZero(v.dotProduct(v1.crossProduct(v2)));
+	            if (isZero(sign)) return null;
+	            if (positive != (sign > 0)) return null;
+	        }
+	        intersections.get(0).geometry = this;
+	        return intersections;
 	}
 }

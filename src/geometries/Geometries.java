@@ -6,6 +6,7 @@ package geometries;
 import java.util.ArrayList;
 import java.util.List;
 
+import geometries.Intersectable.GeoPoint;
 import primitives.Point3D;
 import primitives.Ray;
 
@@ -41,15 +42,15 @@ public class Geometries implements Intersectable{
 		}
 	}
 	@Override
-	public List<Point3D> findIntersections(Ray ray) {
+	public List<GeoPoint> findIntersections(Ray ray) {
 		// TODO Auto-generated method stub
-	        List<Point3D> intersections = null;
+	        List<GeoPoint> intersections = null;
 
 	        for (Intersectable geo : _geometriesList) {
-	            List<Point3D> tempIntersections = geo.findIntersections(ray);
+	            List<GeoPoint> tempIntersections = geo.findIntersections(ray);
 	            if (tempIntersections != null) {
 	                if (intersections == null)
-	                    intersections = new ArrayList<Point3D>();
+	                    intersections = new ArrayList<GeoPoint>();
 	                intersections.addAll(tempIntersections);
 	            }
 	        }

@@ -7,24 +7,19 @@ import primitives.*;
  * @author Ruthi
  *
  */
-public class AmbientLight {
+public class AmbientLight extends Light {
 
-	Color  _intensity;
+	
 
 	/**
-	 * @param _intensity
+	 * @param Ia
+	 * @param Ka
 	 */
 	public AmbientLight(Color Ia,double Ka) {
-		super();
-		this._intensity = Ia.scale(Ka);
+		super(Ia.scale(Ka));
 	}
 
-	/**
-	 * @return the _intensity
-	 */
-	public Color get_intensity() {
-		return _intensity;
-	}
+	
 
 	
 	

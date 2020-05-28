@@ -7,16 +7,51 @@ import static primitives.Util.alignZero;
 import static primitives.Util.isZero;
 import java.util.List;
 
+import primitives.Color;
+import primitives.Material;
 import primitives.Point3D;
 import primitives.Ray;
 /**
  * @author Ruthi
  *
  */
-public class Plane implements Geometry
+public class Plane extends Geometry
 {
 	private Vector _v;
 	private Point3D _p;
+	
+	
+
+	/**
+	 * 
+	 * @param emissionLight
+	 * @param material
+	 * @param _p1
+	 * @param _p2
+	 * @param _p3
+	 */
+	public Plane(Color emissionLight, Material material, Point3D _p1, Point3D _p2, Point3D _p3) {
+		super(emissionLight, material);
+		Vector _v1 = _p1.subtract(_p2);
+		Vector _v2 = _p1.subtract(_p3);
+		this._v =_v1.crossProduct(_v2).normalize();
+		this._p = _p1;
+
+    }
+
+	
+	
+	/**
+	 * @param _color
+	 * @param _v
+	 * @param _p
+	 */
+	public Plane(Color _color,Vector _v, Point3D _p) 
+	{
+		super(_color);
+		this._v = _v.normalize();
+		this._p = _p;
+	}
 	/**
 	 * @param _v
 	 * @param _p
@@ -61,7 +96,7 @@ public class Plane implements Geometry
 		return ( _v);
 	}
 	@Override
-	public List<Point3D> findIntersections(Ray ray) {
+	public List<GeoPoint> findIntersections(Ray ray) {
 		// TODO Auto-generated method stub
 		 Vector p0Q;
 	        try {
@@ -76,7 +111,7 @@ public class Plane implements Geometry
 
 	        double t = alignZero(_v.dotProduct(p0Q) / nv);
 
-	        return t <= 0 ? null : List.of(ray.getTargetPoint(t));
+	        return t <= 0 ? null :List.of(new GeoPoint(this, ray.getTargetPoint(t)));
 	}
     
 	

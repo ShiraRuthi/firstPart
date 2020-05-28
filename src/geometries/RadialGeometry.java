@@ -3,15 +3,42 @@
  */
 package geometries;
 
+import primitives.Color;
+import primitives.Material;
+
+import static primitives.Util.isZero;
 /**
  * @author Ruthi
  *
  */
-public abstract class RadialGeometry implements Geometry 
+public abstract class RadialGeometry extends Geometry 
 {
  
 	protected double _radius;
 	
+	
+	 
+	/**
+	 * 
+	 * @param _material
+	 * @param emissionLight
+	 * @param radius
+	 */
+	public RadialGeometry( Material _material,Color emissionLight, double radius) {
+	       super(emissionLight,_material);
+	       this._radius = radius;
+	   }
+
+	 /**
+    *
+    * @param emissionLight
+    * @param radius
+    */
+   public RadialGeometry(Color emissionLight, double radius) {
+       super(emissionLight);
+       this._radius = radius;
+   }
+
 	/**
 	 * @param _radius
 	 */
@@ -51,6 +78,6 @@ public abstract class RadialGeometry implements Geometry
 		return true;
 	}
 
-	
+	 
 	
 }

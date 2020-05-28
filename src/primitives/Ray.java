@@ -58,6 +58,14 @@ public class Ray {
 		this._p = _p;
 		this._v = _v.normalized();
 	}
+	/**
+	 *@param _ray
+	 */
+	public Ray(Ray other) {
+        this._p = new Point3D(other._p);
+        this._v = other._v.normalized();
+    }
+
 	public Point3D getTargetPoint(double length) {
         return isZero(length ) ? _p : _p.add(_v.scale(length));
  }

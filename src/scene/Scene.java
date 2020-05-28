@@ -3,10 +3,12 @@
  */
 package scene;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import elements.AmbientLight;
 import elements.Camera;
+import elements.LightSource;
 import geometries.Geometries;
 import geometries.Intersectable;
 import primitives.Color;
@@ -24,7 +26,7 @@ public class Scene
     private Camera _camera;
     private double _distance;
     private AmbientLight _ambientLight;
-    
+    List<LightSource> _lights;
     /**
 	 * @param _name
 	 */
@@ -32,6 +34,7 @@ public class Scene
 		super();
 		this._name = _name;
 		_geometries = new Geometries();
+		_lights =new LinkedList<LightSource>();
 	}
 
 	
@@ -103,6 +106,16 @@ public class Scene
 	            }
 		
 	}
+	/**
+	 * @param _lightSource
+	 */
+    public void addLights(LightSource _lightSource) {
+        _lights.add(_lightSource);
+   }
+    
+   public List<LightSource> getLightsSources() {
+       return _lights;
+   }
 
 
 
