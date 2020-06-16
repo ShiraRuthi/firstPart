@@ -42,33 +42,35 @@ public class Triangle extends Polygon {
 		// TODO Auto-generated constructor stub
 	}
 	@Override
-	public List<GeoPoint> findIntersections(Ray ray) {
-		   List<GeoPoint> intersections = _plane.findIntersections(ray);
-	        if (intersections == null) return null;
+	 public List<GeoPoint> findIntersections(Ray ray, double maxDistance) {
+        List<GeoPoint> planeIntersections = _plane.findIntersections(ray, maxDistance);
+        if (planeIntersections == null) return null;
 
-	        Point3D p0 = ray.get_p();
-	        Vector v = ray.get_v();
+        Point3D p0 = ray.get_p();
+        Vector v = ray.get_v();
 
-	        Vector v1 = _vertices.get(0).subtract(p0);
-	        Vector v2 = _vertices.get(1).subtract(p0);
-	        Vector v3 = _vertices.get(2).subtract(p0);
+        Vector v1 = _vertices.get(0).subtract(p0);
+        Vector v2 = _vertices.get(1).subtract(p0);
+        Vector v3 = _vertices.get(2).subtract(p0);
 
-	        double s1 = v.dotProduct(v1.crossProduct(v2));
-	        if (isZero(s1)) return null;
-	        double s2 = v.dotProduct(v2.crossProduct(v3));
-	        if (isZero(s2)) return null;
-	        double s3 = v.dotProduct(v3.crossProduct(v1));
-	        if (isZero(s3)) return null;
+        double s1 = v.dotProduct(v1.crossProduct(v2).normalized());
+        if (isZero(s1)) return null;
+        double s2 = v.dotProduct(v2.crossProduct(v3).normalized());
+        if (isZero(s2)) return null;
+        double s3 = v.dotProduct(v3.crossProduct(v1).normalized());
+        if (isZero(s3)) return null;
 
-	        if ((s1 > 0 && s2 > 0 && s3 > 0) || (s1 < 0 && s2 < 0 && s3 < 0)) {
-	            intersections.get(0).geometry = this;
-	            return intersections;
-	        }
-	        return null;
+        if ((s1 > 0 && s2 > 0 && s3 > 0) || (s1 < 0 && s2 < 0 && s3 < 0)) {
+            //for GeoPoint
+            for (GeoPoint geo : planeIntersections) {
+                geo.geometry = this;
+            }
+            return planeIntersections;
+        }
 
-	    }
-    
+        return null;
 
+    }
    
 
 	

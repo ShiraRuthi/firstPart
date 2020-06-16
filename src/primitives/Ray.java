@@ -10,6 +10,7 @@ import static primitives.Util.isZero;;
 public class Ray {
 	private Point3D _p;
 	private Vector _v;
+	private static final double DELTA = 0.1;
 	/**
 	 * @return the _p
 	 */
@@ -65,6 +66,16 @@ public class Ray {
         this._p = new Point3D(other._p);
         this._v = other._v.normalized();
     }
+    public Ray(Point3D point, Vector direction, Vector normal)
+    {
+       //point + normal.scale(±DELTA)
+	        _v = new Vector(direction).normalized();
+
+	        double nv = normal.dotProduct(direction);
+
+	        Vector normalDelta = normal.scale((nv > 0 ? DELTA : -DELTA));
+	        _p = point.add(normalDelta);
+	    }
 
 	public Point3D getTargetPoint(double length) {
         return isZero(length ) ? _p : _p.add(_v.scale(length));

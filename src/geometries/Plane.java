@@ -96,7 +96,7 @@ public class Plane extends Geometry
 		return ( _v);
 	}
 	@Override
-	public List<GeoPoint> findIntersections(Ray ray) {
+	public List<GeoPoint> findIntersections(Ray ray,double maxDistance) {
 		// TODO Auto-generated method stub
 		 Vector p0Q;
 	        try {
@@ -105,13 +105,18 @@ public class Plane extends Geometry
 	            return null; // ray starts from point Q - no intersections
 	        }
 
-	        double nv = _v.dotProduct(ray.get_v());
-	        if (isZero(nv)) // ray is parallel to the plane - no intersections
+	        double nv = getNormal().dotProduct(ray.get_v());
+	        if (isZero(nv)) { // ray is parallel to the plane - no intersections
 	            return null;
+	        }
+	        double t = alignZero(getNormal().dotProduct(p0Q) / nv);
+	        double tdist = alignZero(maxDistance - t);
 
-	        double t = alignZero(_v.dotProduct(p0Q) / nv);
-
-	        return t <= 0 ? null :List.of(new GeoPoint(this, ray.getTargetPoint(t)));
+	        if ((t <= 0) || (tdist <= 0)) {
+	            return null;
+	        } else {
+	            return List.of(new GeoPoint(this, ray.getTargetPoint(t)));
+	        }
 	}
     
 	

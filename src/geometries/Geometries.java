@@ -42,18 +42,20 @@ public class Geometries implements Intersectable{
 		}
 	}
 	@Override
-	public List<GeoPoint> findIntersections(Ray ray) {
+	public List<GeoPoint> findIntersections(Ray ray,double maxDistance) {
 		// TODO Auto-generated method stub
 	        List<GeoPoint> intersections = null;
 
 	        for (Intersectable geo : _geometriesList) {
-	            List<GeoPoint> tempIntersections = geo.findIntersections(ray);
+	            List<GeoPoint> tempIntersections = geo.findIntersections(ray,maxDistance);
 	            if (tempIntersections != null) {
 	                if (intersections == null)
 	                    intersections = new ArrayList<GeoPoint>();
-	                intersections.addAll(tempIntersections);
+	                  intersections.addAll(tempIntersections);
 	            }
 	        }
+	        
+
 	        return intersections;
 
 	}

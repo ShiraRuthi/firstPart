@@ -12,7 +12,7 @@ import primitives.*;
  *
  */
 public interface Intersectable {
-	List<GeoPoint> findIntersections(Ray ray);
+	
 	
 	/**
 	 * class GeoPoint
@@ -58,6 +58,11 @@ public interface Intersectable {
 		
 	    
 	}
+	
+	default List<GeoPoint> findIntersections(Ray ray) { 
+		return findIntersections(ray, Double.POSITIVE_INFINITY); 
+		}
+	List<GeoPoint> findIntersections(Ray ray, double maxDistance);
 
 
 }

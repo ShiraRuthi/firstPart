@@ -117,31 +117,36 @@ public  class Polygon extends Geometry {
         return _plane.getNormal();
     }
 	@Override
-	public List<GeoPoint> findIntersections(Ray ray) {
+	public List<GeoPoint> findIntersections(Ray ray,double maxDistance) {
 
-		 List<GeoPoint> intersections = _plane.findIntersections(ray);
+		List<GeoPoint> planeIntersections = _plane.findIntersections(ray, maxDistance);
+        if (planeIntersections == null)
+            return null;
 
-	        if (intersections == null) return null;
+        Point3D p0 = ray.get_p();
+        Vector v = ray.get_v();
 
-	        Point3D p0 = ray.get_p();
-	        Vector v = ray.get_v();
+        Vector v1 = _vertices.get(1).subtract(p0);
+        Vector v2 = _vertices.get(0).subtract(p0);
+        double sign = v.dotProduct(v1.crossProduct(v2));
+        if (isZero(sign))
+            return null;
 
-	        Vector v1 = _vertices.get(1).subtract(p0);
-	        Vector v2 = _vertices.get(0).subtract(p0);
-	        double sign = v.dotProduct(v1.crossProduct(v2));
-	        if (isZero(sign))
-	            return null;
+        boolean positive = sign > 0;
 
-	        boolean positive = sign > 0;
+        for (int i = _vertices.size() - 1; i > 0; --i) {
+            v1 = v2;
+            v2 = _vertices.get(i).subtract(p0);
+            sign = alignZero(v.dotProduct(v1.crossProduct(v2)));
+            if (isZero(sign)) return null;
+            if (positive != (sign > 0)) return null;
+        }
 
-	        for (int i = _vertices.size() - 1; i > 0; --i) {
-	            v1 = v2;
-	            v2 = _vertices.get(i).subtract(p0);
-	            sign = alignZero(v.dotProduct(v1.crossProduct(v2)));
-	            if (isZero(sign)) return null;
-	            if (positive != (sign > 0)) return null;
-	        }
-	        intersections.get(0).geometry = this;
-	        return intersections;
-	}
+        //for GeoPoint
+        List<GeoPoint> result = new ArrayList<>();
+        for (GeoPoint geo : planeIntersections) {
+            result.add(new GeoPoint(this, geo.point));
+        }
+        return result;
+    }
 }
