@@ -32,11 +32,11 @@ public class Render {
 	private static final double MIN_CALC_COLOR_K = 0.001;
 	
 	
-	/* SUPER SAMPLING
-	 */
+	////////////////////////////////////////// SUPER SAMPLING/////////////////////////////////////
+	 
 	 private double _supersamplingDensity = 1d;
 	    private int _rayCounter = 1;
-	//
+	///////////////////////////////////////////////////
 	public Render(ImageWriter imageWriter, Scene scene) {
 		_imageWriter = imageWriter;
 		_scene = scene;

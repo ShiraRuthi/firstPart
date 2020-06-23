@@ -44,9 +44,9 @@ public class Material {
 	     * 
 	     * @param material
 	     */
-//	    public Material(Material material) {
-//	        this(material._kD, material._kS, material._nShininess);
-//	    }
+	    public Material(Material material) {
+	        this(material._kD, material._kS, material._nShininess);
+	    }
 	    
 	    public double getKd() {
 	        return _kD;

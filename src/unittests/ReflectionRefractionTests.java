@@ -49,6 +49,9 @@ public class ReflectionRefractionTests {
 		render.renderImage();
 		render.writeToImage();
 	}
+	/**
+	 * our incredibe picture
+	 */
 	@Test
 	public void ourIncrediblePicture()
 	{
@@ -77,6 +80,9 @@ public class ReflectionRefractionTests {
 		render.renderImage();
 		render.writeToImage();
 	}
+	/**
+	 * our stunning picture
+	 */
 	@Test
 	public void ourStunningPicture()
 	{
