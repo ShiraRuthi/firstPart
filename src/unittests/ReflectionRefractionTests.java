@@ -6,9 +6,11 @@ package unittests;
 import org.junit.Test;
 
 import elements.*;
+import geometries.Plane;
 import geometries.Polygon;
 import geometries.Sphere;
 import geometries.Triangle;
+import geometries.Tube;
 import primitives.*;
 import renderer.*;
 import scene.Scene;
@@ -17,7 +19,7 @@ import scene.Scene;
  * Tests for reflection and transparency functionality, test for partial shadows
  * (with transparency)
  * 
- * @author dzilb
+ * @author Ruthi
  *
  */
 public class ReflectionRefractionTests {
@@ -75,6 +77,81 @@ public class ReflectionRefractionTests {
 		render.renderImage();
 		render.writeToImage();
 	}
+	@Test
+	public void ourStunningPicture()
+	{
+		Scene scene = new Scene("Test scene");
+		scene.set_camera(new Camera(new Point3D(0, 0, -1000), new Vector(0, 0, 1), new Vector(0, -1, 0)));
+		scene.set_distance(1000);
+		scene.set_background(new Color(java.awt.Color.BLACK));
+		scene.set_ambientLight(new AmbientLight(new Color(255, 255, 255), 0.1));
+
+
+        scene.addGeometries(	
+		new Sphere(new Color(java.awt.Color.BLUE), new Material(0.2, 0.2, 30, 0.6, 0), // )
+				10, new Point3D(-80, -80, -50)),
+        new Sphere(new Color(java.awt.Color.BLUE), new Material(0.2, 0.2, 30, 0.6, 0), // )
+        					5, new Point3D(-90, -70, -50)),
+        new Sphere(new Color(java.awt.Color.BLUE), new Material(0.2, 0.2, 30, 0.6, 0), // )
+				7, new Point3D(-85, -60, -50)),
+        new Sphere(new Color(java.awt.Color.BLUE), new Material(0.2, 0.2, 30, 0.6, 0), // )
+    					4, new Point3D(-90, -51, -50)),
+        new Sphere(new Color(java.awt.Color.BLUE), new Material(0.2, 0.2, 30, 0.6, 0), // )
+            					9, new Point3D(-75, -50, -30)),
+        new Sphere(new Color(java.awt.Color.BLUE), new Material(0.2, 0.2, 30, 0.6, 0), // )
+				7, new Point3D(-90, -40, -50)),
+        /////////////////////////////////
+        new Sphere(new Color(java.awt.Color.BLUE), new Material(0.2, 0.2, 30, 0.6, 0), // )
+				10, new Point3D(-80, -35, -50)),
+        new Sphere(new Color(java.awt.Color.BLUE), new Material(0.2, 0.2, 30, 0.6, 0), // )
+        					5, new Point3D(-90, -25, -50)),
+        new Sphere(new Color(java.awt.Color.BLUE), new Material(0.2, 0.2, 30, 0.6, 0), // )
+				7, new Point3D(-85, -10, -50)),
+        new Sphere(new Color(java.awt.Color.BLUE), new Material(0.2, 0.2, 30, 0.6, 0), // )
+    					4, new Point3D(-90, -1, -50)),
+        new Sphere(new Color(java.awt.Color.BLUE), new Material(0.2, 0.2, 30, 0.6, 0), // )
+            					15, new Point3D(-70, 8, -30)),
+        new Sphere(new Color(java.awt.Color.BLUE), new Material(0.2, 0.2, 30, 0.6, 0), // )
+				8.5, new Point3D(-70, -20, -20)),
+        new Sphere(new Color(java.awt.Color.BLUE), new Material(0.2, 0.2, 30, 0.6, 0), // )
+				20, new Point3D(-80, 40, -50)),
+        new Sphere(new Color(java.awt.Color.BLUE), new Material(0.2, 0.2, 30, 0.6, 0), // )
+				15, new Point3D(-48, 30, -50)),
+        new Sphere(new Color(java.awt.Color.BLUE), new Material(0.2, 0.2, 30, 0.6, 0), // )
+				25, new Point3D(-60, 75, -100)), 
+        new Sphere(new Color(java.awt.Color.BLUE), new Material(0.2, 0.2, 30, 0.6, 0), // )
+				20, new Point3D(-25, 75, -20)),
+        new Sphere(new Color(java.awt.Color.BLUE), new Material(0.2, 0.2, 30, 0.6, 0), // )
+				15, new Point3D(12, 80, -50)),
+        new Sphere(new Color(java.awt.Color.BLUE), new Material(0.2, 0.2, 30, 0.6, 0), // )
+				9, new Point3D(-40, 45, -150)),
+        new Sphere(new Color(java.awt.Color.BLUE), new Material(0.2, 0.2, 30, 0.6, 0), // )
+				14, new Point3D(35,90 , 0)),
+        new Sphere(new Color(java.awt.Color.BLUE), new Material(0.2, 0.2, 30, 0, 0), // )
+				8, new Point3D(-10, 90, -50)),
+        new Sphere(new Color(java.awt.Color.BLUE), new Material(0.2, 0.2, 30, 0.6, 0), // )
+				8, new Point3D(-90, 10, -50)),
+        new Sphere(new Color(java.awt.Color.BLUE), new Material(0.2, 0.2, 30, 0.6, 0), // )
+				8, new Point3D(-95, -90, -50))        );
+
+scene.addLights(new SpotLight(new Color(1020, 400, 400),  new Point3D(-750, 750, 150), 
+		   new Vector(-1, 1, 4), 1, 0.00001, 0.000005));
+    
+       scene.addLights(new SpotLight(new Color(450, 250, 0), new Point3D(-80, 90, -50),new Vector(10, -2, 5), 1, 0.001, 0.0001));
+       scene.addLights(new PointLight(new Color(450, 250, 0), new Point3D(100, 0,-250), 1, 0.00001, 0.000001));
+       scene.addLights(new DirectionalLight(new Color(new Color(450,250,0)), new Vector(-80, 85, 100000)));
+
+
+       scene.addLights(new SpotLight(new Color(1020, 400, 400),  new Point3D(-750, 750, 150), 
+		   new Vector(-1, 1, 4), 1, 0.00001, 0.000005));
+		ImageWriter imageWriter = new ImageWriter("stunningPicture", 200, 200, 600, 600);
+
+		Render render = new Render(imageWriter, scene);
+
+		render.renderImage();
+		render.writeToImage();
+	}
+
 
 	/**
 	 * Produce a picture of a sphere lighted by a spot light
@@ -134,4 +211,5 @@ public class ReflectionRefractionTests {
 		render.renderImage();
 		render.writeToImage();
 	}
+	
 }

@@ -10,6 +10,7 @@ import elements.AmbientLight;
 import elements.Camera;
 import elements.LightSource;
 import geometries.Geometries;
+import geometries.Geometry;
 import geometries.Intersectable;
 import geometries.Intersectable.GeoPoint;
 import primitives.Color;
@@ -31,15 +32,42 @@ public class Render {
 	private static final double MIN_CALC_COLOR_K = 0.001;
 	
 	
+	/* SUPER SAMPLING
+	 */
+	 private double _supersamplingDensity = 1d;
+	    private int _rayCounter = 1;
+	//
 	public Render(ImageWriter imageWriter, Scene scene) {
 		_imageWriter = imageWriter;
 		_scene = scene;
 	}
+	
+	
+	public double getSupersamplingDensity() {
+        return _supersamplingDensity;
+    }
+
+    public Render setSupersamplingDensity(double supersamplingDensity) {
+        _supersamplingDensity = supersamplingDensity;
+        return this;
+    }
+
+    public int getRayCounter() {
+        return _rayCounter;
+    }
+
+    public Render setRayCounter(int rayCounter) {
+        _rayCounter = rayCounter;
+        return this;
+    }
+
+	
+	
 	/**
      * Filling the buffer according to the geometries that are in the scene.
      * This function does not creating the picture file, but create the buffer pf pixels
      */
-	public void renderImage() {
+	/*public void renderImage() {
 		Camera camera = _scene.get_camera();
 		Intersectable geometries = _scene.get_geometries();
 		java.awt.Color background = _scene.get_background().getColor();
@@ -66,8 +94,62 @@ public class Render {
 		}
 		
 		
-	}
-    
+	}*/
+////////////////////////////////////////SUPER SAMPLING////////////////////////////////////////////
+    public void renderImage() {
+        Camera camera = _scene.get_camera();
+        Intersectable geometries = _scene.get_geometries();
+        java.awt.Color background = _scene.get_background().getColor();
+        AmbientLight ambientLight = _scene.get_ambientLight();
+        double distance = _scene.get_distance();
+
+        int Nx = _imageWriter.getNx();
+        int Ny = _imageWriter.getNy();
+        double width = _imageWriter.getWidth();
+        double height = _imageWriter.getHeight();
+
+        if (_supersamplingDensity == 0d) {
+            for (int row = 0; row < Ny; row++) {
+                for (int collumn = 0; collumn < Nx; collumn++) {
+                    Ray ray = camera.constructRayThroughPixel(Nx, Ny, collumn, row, distance, width, height);
+                    GeoPoint closestPoint = findClosestIntersection(ray);
+                    if (closestPoint == null) {
+                        _imageWriter.writePixel(collumn, row, background);
+                    } else {
+                        _imageWriter.writePixel(collumn, row, calcColor(closestPoint, ray).getColor());
+                    }
+                }
+            }
+        } else {    //supersampling
+            for (int row = 0; row < Ny; row++) {
+                for (int collumn = 0; collumn < Nx; collumn++) {
+                    Ray ray = camera.constructRayThroughPixel(Nx, Ny, collumn, row, distance, width, height);
+                    GeoPoint centerPoint = findClosestIntersection(ray);
+                    Color Bckg = new Color(background);
+                    Color averageColor = Color.BLACK;
+                    List<Ray> rayBeam = camera.constructRayBeamThroughPixel(Nx, Ny, collumn, row, distance, width, height, _supersamplingDensity, _rayCounter);
+                    rayBeam.add(ray);
+                    _imageWriter.writePixel(collumn, row, calcColor(rayBeam).getColor());
+                }
+            }
+        }
+    }
+    /**
+     * @param inRay List of surrounding rays
+     * @return average color
+     */
+    private Color calcColor(List<Ray> inRay) {
+        Color bkg = _scene.get_background();
+        Color color = Color.BLACK;
+        for (Ray ray : inRay) {
+            GeoPoint gp = findClosestIntersection(ray);
+            color = color.add(gp == null ? bkg : calcColor(gp, ray, MAX_CALC_COLOR_LEVEL, 1d));
+        }
+        color = color.add(_scene.get_ambientLight().get_intensity());
+        int size = inRay.size();
+        return (size == 1) ? color : color.reduce(size);
+    }
+////////////////////////////////////////SUPER SAMPLING//////////////////////////////////////////// 
     /**
      * 
      *
@@ -105,7 +187,7 @@ public class Render {
         return color;
     }
 //
-   private Color calcColor(GeoPoint geoPoint, Ray inRay, int level, double k) {
+  /* private Color calcColor(GeoPoint geoPoint, Ray inRay, int level, double k) {
        if (level == 0 || k < MIN_CALC_COLOR_K) {
            return Color.BLACK;
        }
@@ -149,9 +231,54 @@ public class Render {
             }
        }
        return result;
-    }
+    }*/
     
+    private Color calcColor(GeoPoint geoPoint, Ray inRay, int level, double k) {
+        if (level == 1) {
+            return Color.BLACK;
+        }
 
+        Point3D pointGeo = geoPoint.point;
+        Geometry geometryGeo = geoPoint.geometry;
+        Color color = geometryGeo.get_emission();
+
+        Material material = geometryGeo.get_material();
+        int nShininess = material.getnShininess();
+        double kd = material.getKd();
+        double ks = material.getKs();
+        Vector v = pointGeo.subtract(_scene.get_camera().get_position()).normalize();
+        Vector n = geometryGeo.getNormal(pointGeo);
+        double nv = alignZero(n.dotProduct(v));
+        if (nv == 0) {
+            //ray parallel to geometry surface ??
+            //and orthogonal to normal
+            return color;
+        }
+        color = getLightSourcesColors(geoPoint, k, color, v, n,nv, nShininess, kd, ks);
+
+        double kr = geometryGeo.get_material().get_kR();
+        double kkr = k * kr;
+
+        if (kkr > MIN_CALC_COLOR_K) {
+            color = getColorSecondaryRay(level, color, kr, kkr, constructReflectedRay(pointGeo, inRay, n));
+        }
+
+        double kt = geometryGeo.get_material().get_kT();
+        double kkt = k * kt;
+
+        if (kkt > MIN_CALC_COLOR_K) {
+            color = getColorSecondaryRay(level, color, kt, kkt, constructRefractedRay(pointGeo, inRay, n));
+        }
+        return color;
+    }
+
+    private Color getColorSecondaryRay(int level, Color color, double kr, double kkr, Ray secondaryRay) {
+        GeoPoint geoPoint = findClosestIntersection(secondaryRay);
+        if (geoPoint != null) {
+            color = color.add(calcColor(geoPoint, secondaryRay, level - 1, kkr).scale(kr));
+        }
+        return color;
+    }
 /*	private Color calcColor(GeoPoint gp, Ray ray, int level, double k) {
 		Color color = gp.geometry.get_emission();
 
